@@ -1,9 +1,9 @@
 from collections import defaultdict, deque
 
-from bitarray import bitarray
+#from bitarray import bitarray
 
 import reachability
-from antichains.library_linker import winning_region_c
+#from antichains.library_linker import winning_region_c
 from graph import Graph
 from tools import operations as ops
 from tools.operations import transform_graph_into_c_spec, transform_graph_into_c

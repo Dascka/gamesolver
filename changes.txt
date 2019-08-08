@@ -1,0 +1,6 @@
+Assets/buchi/...
+Assets/strong parity/example6:9.txt
+benchmarks/partialsolvers_benchmark.py
+solvers/partialsolvers/...
+solvers/buchi.py
+test/partialsolvers_test.py

@@ -204,9 +204,14 @@ def random(n, p, i, o):
         S.remove(node_s)
         T.add(node_s)
 
+    #Special case if n == 1, can't pass on the loop above. Adding the only possible successor in this case.
+    if n == 1:
+        g.add_successor(0, 0)
+        g.add_predecessor(0, 0)
+
     for node in range(0, n):
         num = randint(i, o)
-        edges_added = 0
+        edges_added = 1
         while edges_added < num:
             to = choice(nodes)
             if not (to in g.get_successors(node)):
@@ -254,7 +259,7 @@ def random_generalized(n, k, p, i, o):
 
     for node in range(0, n):
         num = randint(i, o)
-        edges_added = 0
+        edges_added = 1
         while edges_added < num:
             to = choice(nodes)
             if not (to in g.get_successors(node)):
