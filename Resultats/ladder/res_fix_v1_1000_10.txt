@@ -1,0 +1,3 @@
+Games completely solved : 100
+Games partialy solved : 0
+For each game not completely solved : 

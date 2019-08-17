@@ -4,3 +4,6 @@ benchmarks/partialsolvers_benchmark.py
 solvers/partialsolvers/...
 solvers/buchi.py
 test/partialsolvers_test.py
+test/buchi_test.py
+tools/file_handler.py
+solver.py

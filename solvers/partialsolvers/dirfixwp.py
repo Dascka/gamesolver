@@ -11,11 +11,12 @@ def build_safety_game(g, j, lam):
     :return: g' the new game created. Note that we don't return beta like we do in the theory because we define a unique id for beta that is -1.
     """
     g_new = Graph()
-    for s in g.get_nodes():
-        for c in range(0, ops.max_priority(g) + 1):
-            for l in range(0, lam):
+    for s in g.get_nodes():# O(n) * O(d) * O(lambda)
+        for c in range(0, ops.max_priority(g) + 1): #O(d) * O(lambda)
+            for l in range(0, lam): #O(lambda)
                 s_player = g.get_node_player(s)
-                #node id is the concatenation of s, c and l. Ex : if we have a node s = 5, c = 10, l = 2 we would have the node id = 5102. 
+                #node id is the concatenation of s, c and l plus letters to make the separation. 
+                # Ex : if we have a node s = 5, c = 10, l = 2 we would have the node id = s5c10l2. 
                 #this way we have unique id and we can easily find a specific node if we want to
                 node_id = compute_id(s, c, l)
                 #node informations are in the following format : (player, base node id, maximum color on the current window, step on current window) aka (s_player, s, c, l)
@@ -26,12 +27,12 @@ def build_safety_game(g, j, lam):
     g_new.add_predecessor(-1, -1)
     
     #iterate on all the node of g_new
-    for node_id in g_new.get_nodes():
+    for node_id in g_new.get_nodes(): # (O(m) * O(d) * O(lambda)) (the two loops make a complexity O(m))
         if node_id != -1:
             (s, c, l) = g_new.nodes[node_id][1:4]
             trans_list = g.get_successors(s)
             #iterate on all successors (in g) of the node s
-            for s2 in trans_list:
+            for s2 in trans_list: 
                 #when we encounter a c of parity j we know we can reset the window and go to the next state. So we add the corresponding transition in the new game
                 if((c % 2) == j):
                     #we want to add a transition from (s, c, l) towards (s2, c2, l2)
@@ -79,7 +80,7 @@ def solve_dirfixwp(g, j, lam):
     w_safety = []
     for node_id in g_new.get_nodes():
         if node_id != -1:
-            (s, c, l) = g_new.nodes[node_id][1:4]
+            s = g_new.nodes[node_id][1]
             if (node_id not in w_reach) and (s not in w_safety):
                 w_safety.append(s)
 
@@ -149,11 +150,11 @@ def partial_solver2(g, lam):
 
 def compute_id(s, c, l):
     """
-    Compute the id of a node in g_new by concatenating s, c, l.
+    Compute the id of a node in g_new by concatenating s, c, l with letters to identify each part in the id.
     :param s: the id of the state in g.
     :param c: the maximum color seen on the current window.
     :param l: the number of step in the current window.
     :return: the id of the node (s, c, l) in g_new.
     """
-    res = int(str(s) + str(c) + str(l))
+    res = "s" + str(s) + "c" + str(c) + "l" + str(l)
     return res

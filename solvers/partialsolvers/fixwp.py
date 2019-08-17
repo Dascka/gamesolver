@@ -13,11 +13,12 @@ def build_buchi_game(g, j, lam):
     and we can retrieve it from the list of states.
     """
     g_new = Graph()
-    for s in g.get_nodes():
-        for c in range(0, ops.max_priority(g) + 1):
-            for l in range(0, lam):
+    for s in g.get_nodes(): #O(n) * O(d) * O(lambda)
+        for c in range(0, ops.max_priority(g) + 1): #O(d) * O(lambda)
+            for l in range(0, lam): #O(lambda)
                 s_player = g.get_node_player(s)
-                #node id is the concatenation of s, c and l. Ex : if we have a node s = 5, c = 10, l = 2 we would have the node id = 5102. 
+                #node id is the concatenation of s, c and l plus letters to make the separation. 
+                # Ex : if we have a node s = 5, c = 10, l = 2 we would have the node id = s5c10l2. 
                 #this way we have unique id and we can easily find a specific node if we want to
                 node_id = compute_id(s, c, l)
                 #node informations are in the following format : (player, base node id, maximum color on the current window, step on current window) aka (s_player, s, c, l)
@@ -26,7 +27,7 @@ def build_buchi_game(g, j, lam):
         g_new.add_node(-s, (-1, s, -1, -1))
     
     #iterate on all the node of g_new
-    for node_id in g_new.get_nodes():
+    for node_id in g_new.get_nodes(): # (O(m + n) * O(d) * O(lambda)) (the two loops make a complexity O(m + n) with the + n for the beta_s)
         if node_id > -1:
             (s, c, l) = g_new.nodes[node_id][1:4]
             trans_list = g.get_successors(s)
@@ -50,14 +51,15 @@ def build_buchi_game(g, j, lam):
 
                 #when we just detected a lambda-bad window
                 else:
-                    #we want to add a transition from (s, c, l) towards beta_s the beta corresponding to state s
-                    node_id_trans = -s
+                    #we want to add a transition from (s, c, l) towards beta_s2 the beta corresponding to state s2
+                    node_id_trans = -s2
                 
                 #we add the transition we just compute to g_new
                 g_new.add_successor(node_id, node_id_trans)
                 g_new.add_predecessor(node_id_trans, node_id)
         else:
-            node_id_trans = - node_id
+            #beta case, we add a transition from beta_s to (s, c(s), 0)
+            node_id_trans = compute_id(- node_id, g.get_node_priority(-node_id), 0)
             g_new.add_successor(node_id, node_id_trans)
             g_new.add_predecessor(node_id_trans, node_id)
 
@@ -78,14 +80,15 @@ def solve_fixwp(g, j, lam):
     #The map and the lambda function take all the node in g and return a list with each the opposite of each element, that corresponds to the beta states
     beta = map(lambda x: x*-1, g.get_nodes())
     #we compute the winning region of the player jbar for the objective Buchi(beta). 
-    w_buchi = buchi.opt_buchi(g_new, beta, ops.opponent(j))
+    w_buchi = buchi.basic_buchi(g_new, beta, ops.opponent(j))
     #now we will transform what we just got into the winning region of the play j for the objective Buchi(S \ beta).
     #instead of basically computing the winning region of the co-buchi objective, we directly keep the state s that we are interested in.
     #because the true winning region of the co_buchi objective contains state in the following format : (s, c, l).
     w_cobuchi = []
     for node_id in g_new.get_nodes():
-        if node_id != -1:
-            (s, c, l) = g_new.nodes[node_id][1:4]
+        #to avoid taking beta states. str are considered as > 0
+        if node_id > 0:
+            s = g_new.nodes[node_id][1]
             if (node_id not in w_buchi) and (s not in w_cobuchi):
                 w_cobuchi.append(s)
 
@@ -154,11 +157,11 @@ def partial_solver2(g, lam):
 
 def compute_id(s, c, l):
     """
-    Compute the id of a node in g_new by concatenating s, c, l.
+    Compute the id of a node in g_new by concatenating s, c, l with letters to identify each part in the id.
     :param s: the id of the state in g.
     :param c: the maximum color seen on the current window.
     :param l: the number of step in the current window.
     :return: the id of the node (s, c, l) in g_new.
     """
-    res = int(str(s) + str(c) + str(l))
+    res = "s" + str(s) + "c" + str(c) + "l" + str(l)
     return res

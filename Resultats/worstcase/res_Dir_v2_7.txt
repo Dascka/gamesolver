@@ -1,0 +1,35 @@
+Games completely solved : 28
+Games partialy solved : 8
+For each game not completely solved : 
+For game of size 65 (1 games): 
+	Percentage solved for both players : 3.07692307692
+	Percentage solved for player 0 : 3.07692307692
+	Percentage solved for player 1 : 100.0
+For game of size 35 (1 games): 
+	Percentage solved for both players : 5.71428571429
+	Percentage solved for player 0 : 5.71428571429
+	Percentage solved for player 1 : 100.0
+For game of size 5 (1 games): 
+	Percentage solved for both players : 40.0
+	Percentage solved for player 0 : 40.0
+	Percentage solved for player 1 : 100.0
+For game of size 110 (1 games): 
+	Percentage solved for both players : 1.81818181818
+	Percentage solved for player 0 : 100.0
+	Percentage solved for player 1 : 1.81818181818
+For game of size 80 (1 games): 
+	Percentage solved for both players : 2.5
+	Percentage solved for player 0 : 100.0
+	Percentage solved for player 1 : 2.5
+For game of size 50 (1 games): 
+	Percentage solved for both players : 4.0
+	Percentage solved for player 0 : 100.0
+	Percentage solved for player 1 : 4.0
+For game of size 20 (1 games): 
+	Percentage solved for both players : 10.0
+	Percentage solved for player 0 : 100.0
+	Percentage solved for player 1 : 10.0
+For game of size 95 (1 games): 
+	Percentage solved for both players : 2.10526315789
+	Percentage solved for player 0 : 2.10526315789
+	Percentage solved for player 1 : 100.0

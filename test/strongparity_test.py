@@ -327,9 +327,9 @@ def launch_tests():
                       example_2_reduction_to_safety() and example_3_reduction_to_safety() and \
                       example_4_reduction_to_safety() and example_5_reduction_to_safety() and \
                       worstcase1_reduction_to_safety() and worstcase2_reduction_to_safety()
-    antichain_based = figure56_antichain_algorithm() and example_1_antichain_algorithm() and \
-                      example_2_antichain_algorithm() and example_3_antichain_algorithm() and \
-                      example_4_antichain_algorithm() and example_5_antichain_algorithm() and \
-                      worstcase1_antichain_algorithm() and worstcase2_antichain_algorithm()
+    # antichain_based = figure56_antichain_algorithm() and example_1_antichain_algorithm() and \
+    #                   example_2_antichain_algorithm() and example_3_antichain_algorithm() and \
+    #                   example_4_antichain_algorithm() and example_5_antichain_algorithm() and \
+    #                   worstcase1_antichain_algorithm() and worstcase2_antichain_algorithm()
 
-    return recursive and removed_optimization and reduction_to_safety and antichain_based
+    return recursive and removed_optimization and reduction_to_safety #and antichain_based

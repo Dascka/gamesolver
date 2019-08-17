@@ -5,20 +5,22 @@ from solvers.reachability import attractor as attr
 def compute_gdagger(g, j):
     """
     Compute and return the product game g_dagger from g for the player j.
+    Total complexity : O(n) + O(n*d) + O(n*d) * O(n) = O(n^2*d)
     :param g: the game on which g_dagger is based.
     :param j: the player for who g_dagger is computed.
     :return: the product game g_dagger from g for the player j.
     """
     #creating a list containing all colors in the game
-    d = ops.max_priority(g)
+    d = ops.max_priority(g) #O(n)
     colors = range(0, d+1)
 
     g_dagger = Graph()
     #adding all states in g_dagger. The stated are created doing a cartesian product between g states and colors
-    for s in g.get_nodes():
-        for v in colors:
-            #node_id is a concatenation of the node id in g and the color c that will be added in the node_info
-            node_id = int(str(s) + str(v))
+    for s in g.get_nodes(): #O(n*d)
+        for v in colors: #O(d)
+            #node_id is a concatenation of the node id in g and the color v that will be added in the node_info with letter to identify each part.
+            #Ex: s = 10, v = 8 => node_id = s10v8
+            node_id = compute_id(s, v)
             #computing the color of the state
             s_color = g.get_node_priority(s)
             node_color = -1
@@ -35,10 +37,10 @@ def compute_gdagger(g, j):
     
     #now adding the trasitions between the states.
     #we add a trasition ((s1, v1), (s2, v2)) iff (s1, s2) is a transition in g and if v2 = max(v1, c(s2))
-    for s1 in g_dagger.get_nodes():
+    for s1 in g_dagger.get_nodes(): #O(n*d) * O(n) = O(n^2 * d)
         #getting the id of the corresponding node in g
         s1_id_g = g_dagger.nodes[s1][1]
-        for s2 in g.get_successors(s1_id_g):
+        for s2 in g.get_successors(s1_id_g): #O(n)
             #getting the color of s2 in g
             s2_color = g.get_node_priority(s2)
             #getting v1  from the state s1
@@ -46,9 +48,9 @@ def compute_gdagger(g, j):
             v2 = max(v1, s2_color)
             #with that we've got (s2, v2) towards which we want to add a transition from s1 (s1 is already a state of g_dagger we can considerate it as (s1_id_g, v1))
             #getting the node id of (s2, v2) in g_dagger
-            node_id_trans = int(str(s2) + str(v2))
-            g_dagger.add_successor(s1, node_id_trans)
-            g_dagger.add_predecessor(node_id_trans, s1)
+            node_id_trans = compute_id(s2, v2)
+            g_dagger.add_successor(s1, node_id_trans) #amortized O(1)
+            g_dagger.add_predecessor(node_id_trans, s1)#amortized O(1)
 
     return g_dagger
 
@@ -69,7 +71,7 @@ def compute_Bi(g, j, b_i):
     for s in b_i:
         for c in j_colors:
             #computing node id of (s, c)
-            sc_id = int(str(s) + str(c))
+            sc_id = compute_id(s, c)
             target.append(sc_id)
     #a for attractor, we compute the attractor for player j on the target we computed just before.
     a = attr(g_dagger, target, j)[0]
@@ -78,7 +80,7 @@ def compute_Bi(g, j, b_i):
     b_i_next = []
     for s in b_i:
         #compute the id of the node (s, 0)
-        s0_id = int(str(s) + str(0))
+        s0_id = compute_id(s, 0)
         if s0_id in a:
             b_i_next.append(s)
 
@@ -158,13 +160,15 @@ def partial_solver(g):
     #we're in the cas where a was empty for player 0 and player 1. In this case we can't say anything about the winning regions of the players.
     return ([], [])
 
+def compute_id(s, v):
+    return "s" + str(s) + "v" + str(v)
 
 def get_j_colors(g, j):
     """
-    Give the colors of parity j
+    Give all the colors of parity j on the game g
     :param g: the game to solve.
     :param j: the player for who we want to get the colors.
-    :return: the colors of parity j.
+    :return: all the colors of parity j on the game g.
     """
     d = ops.max_priority(g)
     j_colors = []

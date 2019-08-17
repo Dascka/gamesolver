@@ -189,26 +189,30 @@ def random(n, p, i, o):
     # Create two partitions, S and T. Initially store all nodes in S.
     S, T = set(nodes), set()
 
-    # Randomly select a first node, and place it in T.
+    # Randomly select a first node.
     node_s = sample(S, 1).pop()
+
+    # Create an edge between the nodes, and move the node from S to T.
+    # Have to do it here because the first node is already in T when we begin de loop so it won't get a successor
+    node_t = sample(S, 1).pop()
+    g.add_predecessor(node_t, node_s)
+    g.add_successor(node_s, node_t)
+
+    #Place the node in T
     S.remove(node_s)
     T.add(node_s)
-
+    
     # Create a random connected graph.
     while S:
         # Select random node from S, and another in T.
         node_s, node_t = sample(S, 1).pop(), sample(T, 1).pop()
+        
         # Create an edge between the nodes, and move the node from S to T.
         g.add_predecessor(node_t, node_s)
         g.add_successor(node_s, node_t)
         S.remove(node_s)
         T.add(node_s)
-
-    #Special case if n == 1, can't pass on the loop above. Adding the only possible successor in this case.
-    if n == 1:
-        g.add_successor(0, 0)
-        g.add_predecessor(0, 0)
-
+    
     for node in range(0, n):
         num = randint(i, o)
         edges_added = 1
